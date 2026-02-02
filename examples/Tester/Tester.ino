@@ -473,7 +473,7 @@ bool sample_gnss()
 	} else {
 		Serial.println("okay");
 	}
-	int rxcnt = 60; // 1000ms * 60 = 60secs
+	int rxcnt = 60; // 3000ms * 60 = 180 seconds
 
 	// gnss read
 	while(rxcnt--) {
@@ -496,7 +496,7 @@ bool sample_gnss()
 			Serial.println(gnssData.longitude);		
 			break;
 		}
-		if(rxcnt > 0) delay(1000);
+		if(rxcnt > 0) delay(3000);
 	}
 
 	Serial.print("gnss stop...");
@@ -522,7 +522,7 @@ void setup()
 
 	// cocolinx begin (hardware:serial1 or software)
 	Serial.print("cocolinx begin...");
-	success = coco.begin(CocoLinx::SERIAL_SOFTWARE);
+	success = coco.begin(CocoLinx::SERIAL_HARDWARE);
 	if(success == false) {
 		Serial.println("error");
 		Serial.println("halt forever...");
