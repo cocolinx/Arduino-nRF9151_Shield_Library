@@ -538,10 +538,10 @@ private:
     
     const uint8_t HW_RX_PIN = 0;
     const uint8_t HW_TX_PIN = 1;
-    const uint8_t SW_RX_PIN = 7;
-    const uint8_t SW_TX_PIN = 8;
+    const uint8_t SW_RX_PIN = 8;
+    const uint8_t SW_TX_PIN = 7;
 
-    const uint32_t BAUDRATE = 115200;
+    const uint32_t BAUDRATE = 9600;
     
     typedef enum
     {
@@ -554,65 +554,71 @@ private:
         CATEGORY_MQTT,
     } cocolinx_category_e;
 
+    /** @brief CATEGORY_SYS command. */
     typedef enum
     {
-        CMD_SYS_HELLO, // req>null, ack>null
-        CMD_SYS_STATE, // data[0](0:booting, 1:ready)
-        CMD_SYS_VERSION, // 
-        CMD_SYS_RESET, // null
-        CMD_SYS_SLEEP, // null
-        CMD_SYS_WAKEUP, // null
-        CMD_SYS_LED_USER_ON, // null
-        CMD_SYS_LED_USER_OFF, // null
+        CMD_SYS_HELLO,
+        CMD_SYS_STATE,
+        CMD_SYS_VERSION,
+        CMD_SYS_RESET,
+        CMD_SYS_SLEEP,
+        CMD_SYS_WAKEUP,
+        CMD_SYS_LED_USER_ON,
+        CMD_SYS_LED_USER_OFF, 
         CMD_SYS_BTN_COUNT,
-        CMD_SYS_FACTORY_RESET, // modem factory reset + system reset
-        CMD_SYS_RTC, // int64_t(ms)
+        CMD_SYS_FACTORY_RESET, 
+        CMD_SYS_RTC, 
     } cocolinx_cmd_sys_e;
     
+    /** @brief CATEGORY_RS485 command. */
     typedef enum
     {
-        CMD_RS485_ENABLE, // baudrate
+        CMD_RS485_ENABLE, 
         CMD_RS485_DISABLE,
-        CMD_RS485_SEND, // 
-        CMD_RS485_RECV, // 
+        CMD_RS485_SEND,
+        CMD_RS485_RECV, 
         CMD_RS485_CLEAR_BUF,
     } cocolinx_cmd_rs485_e;    
 
+    /** @brief CATEGORY_GNSS command. */
     typedef enum
     {
-        CMD_GNSS_START, // req>interval, timeout
+        CMD_GNSS_START, 
         CMD_GNSS_STOP,
         CMD_GNSS_STATUS,
         CMD_GNSS_READ,
     } cocolinx_cmd_gnss_e;
 
+    /** @brief CATEGORY_LTE command. */
     typedef enum
     {
-        CMD_LTE_CONNECT_SYNC, // req>data[0:3]=timeout_sec, data[4:7]=plmn, ans>data[0]=0:no connection, 1:connected
-        CMD_LTE_DISCONNECT, // req>null
-        CMD_LTE_STATUS, // req>null, ack>data[0]='x_lte_connection_status_e'    
-        CMD_LTE_READ_INFO, // req>null, ack>'x_lte_info_ack_t'
-        CMD_LTE_READ_IMEI, // req>null, ack>imei[16]
-        CMD_LTE_READ_ICCID, // req>null, ack>string[20]
-        CMD_LTE_DDNS_IPV4, // req>hostname[128], ack>'x_ipaddr_t'
-        CMD_LTE_PING_IPV4, // req>'x_lte_ping_req_t', ack>'x_lte_ping_ack_t'    
-        CMD_LTE_DATETIME_UTC, // unix ms
-        CMD_LTE_MODEM_ATCMD, // direct at command to modem(shell)
+        CMD_LTE_CONNECT_SYNC, 
+        CMD_LTE_DISCONNECT, 
+        CMD_LTE_STATUS, 
+        CMD_LTE_READ_INFO, 
+        CMD_LTE_READ_IMEI,
+        CMD_LTE_READ_ICCID, 
+        CMD_LTE_DDNS_IPV4, 
+        CMD_LTE_PING_IPV4,  
+        CMD_LTE_DATETIME_UTC, 
+        CMD_LTE_MODEM_ATCMD, 
     } cocolinx_cmd_lte_e;
 
+    /** @brief CATEGORY_UDP command. */
     typedef enum
     {
-        CMD_UDP_OPEN, // req>'x_ipaddr_t'
+        CMD_UDP_OPEN,
         CMD_UDP_CLOSE,
-        CMD_UDP_STATUS, // req>null, ack>[0]=0:closed, 1:opened
-        CMD_UDP_SEND, // req>data, ack>null
-        CMD_UDP_RECV, // req>null, ack>recv_data[recv_size]
-        CMD_UDP_CLEAR, // req>null, ack>null, *clear rx buffer
+        CMD_UDP_STATUS, 
+        CMD_UDP_SEND, 
+        CMD_UDP_RECV,
+        CMD_UDP_CLEAR, 
     } cocolinx_cmd_udp_e;    
 
+    /** @brief CATEGORY_TCP command. */
     typedef enum
     {
-        CMD_TCP_CONNECT, // req>'x_ipaddr_t'
+        CMD_TCP_CONNECT,
         CMD_TCP_DISCONNECT,
         CMD_TCP_STATUS,
         CMD_TCP_SEND,
@@ -620,15 +626,16 @@ private:
         CMD_TCP_CLEAR,
     } cocolinx_cmd_tcp_e;
 
+    /** @brief CATEGORY_MQTT command. */
     typedef enum
     {        
         CMD_MQTT_CONNECT,
         CMD_MQTT_DISCONNECT,
         CMD_MQTT_STATUS,
         CMD_MQTT_PUBLISH,
-        CMD_MQTT_SUBSCRIBE, // req>topic[]
+        CMD_MQTT_SUBSCRIBE,
         CMD_MQTT_UNSUBSCRIBE,
-        CMD_MQTT_RECV_MSG, // req>buffersize, ack>topicLen
+        CMD_MQTT_RECV_MSG,
         CMD_MQTT_CLEAR,
     } cocolinx_cmd_mqtt_e;
 

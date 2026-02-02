@@ -1,6 +1,8 @@
 
 #include "CocoLinx.h"
 
+SoftwareSerial  swSerial(SW_RX_PIN, SW_TX_PIN);
+
 CocoLinx::CocoLinx() :
     _hwSerial(nullptr), 
     _swSerial(nullptr), 
@@ -25,7 +27,7 @@ bool CocoLinx::initSerial()
         if (_swSerial) {
             delete _swSerial;
         }
-        _swSerial = new SoftwareSerial(SW_RX_PIN, SW_TX_PIN);
+        _swSerial = &swSerial;
         _swSerial->begin(BAUDRATE);
         return true;
     }
@@ -33,16 +35,16 @@ bool CocoLinx::initSerial()
 
 uint16_t CocoLinx::crc16Calculate(uint8_t *data, uint32_t size) 
 {
-    uint16_t crc = 0xFFFF; // 초기값은 0xFFFF
+    uint16_t crc = 0xFFFF;
 
     for (uint16_t i = 0; i < size; i++) {
-        crc ^= (uint16_t)data[i]; // 데이터의 한 바이트와 XOR 연산
+        crc ^= (uint16_t)data[i];
 
         for (int j = 0; j < 8; j++) {
-            if (crc & 0x0001) { // 최하위 비트(LSB)가 1이면
-                crc = (crc >> 1) ^ 0xA001; // 오른쪽으로 1비트 쉬프트하고, 다항식(0x8005의 반전된 형태)과 XOR
-            } else { // LSB가 0이면
-                crc = crc >> 1; // 오른쪽으로 1비트 쉬프트
+            if (crc & 0x0001) {
+                crc = (crc >> 1) ^ 0xA001;
+            } else { 
+                crc = crc >> 1;
             }
         }
     }
@@ -65,7 +67,6 @@ uint16_t CocoLinx::getPktDataSize()
     return *((uint16_t *)(&_pktbuf[4]));
 }
 
-// return ack code(negative sign)
 int32_t CocoLinx::transferPkt(uint8_t category, uint8_t cmd, uint16_t datasize, uint32_t timeout_ms)
 {    
     Stream* port = (_serialType == SERIAL_HARDWARE) ? (Stream*)_hwSerial : (Stream*)_swSerial;
@@ -241,7 +242,7 @@ int32_t CocoLinx::rs485Recv(uint8_t *buffer, uint32_t bufferSize)
     if(ack != 0) return ack;
     
     uint16_t pktdata_size = getPktDataSize();
-    if(pktdata_size == 0) return 0; // nothing to recv
+    if(pktdata_size == 0) return 0;
 
     if(buffer != nullptr) memcpy(buffer, pktdata, pktdata_size);
     return (int32_t)pktdata_size;
