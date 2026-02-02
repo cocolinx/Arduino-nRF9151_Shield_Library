@@ -1,4 +1,4 @@
-#include "CocoLinx.h"
+#include <CocoLinx.h>
 
 #define TEST_LTE_PLMN_SELECT 	CocoLinx::PLMN_SKT
 #define TEST_INTERVAL_SECONDS 	180 // 3minutes
@@ -522,7 +522,7 @@ void setup()
 
 	// cocolinx begin (hardware:serial1 or software)
 	Serial.print("cocolinx begin...");
-	success = coco.begin(CocoLinx::SERIAL_HARDWARE);
+	success = coco.begin(CocoLinx::SERIAL_SOFTWARE);
 	if(success == false) {
 		Serial.println("error");
 		Serial.println("halt forever...");

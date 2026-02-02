@@ -1,7 +1,7 @@
 
 #include "CocoLinx.h"
 
-SoftwareSerial  swSerial(SW_RX_PIN, SW_TX_PIN);
+SoftwareSerial  swSerial(8, 7);
 
 CocoLinx::CocoLinx() :
     _hwSerial(nullptr), 
