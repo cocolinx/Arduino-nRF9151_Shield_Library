@@ -462,6 +462,9 @@ bool sample_gnss()
 	int32_t ret;	
 	Serial.println("*** sample_gnss() ***");	
 
+	// deactivate LTE
+	coco.lteDisconnect();
+
 	// gnss connect
 	Serial.print("gnss connect...");
 	ret = coco.gnssStart();
