@@ -1,7 +1,14 @@
+// Simple example of UDP application.
+// LTE connect -> UDP socket open -> UDP connect -> Data send -> echo -> Data recv
+//
+// by CocoLinx
+// 2026-02-03
+// --------------------------------------------------
+
 #include <CocoLinx.h>
 
 #define TEST_LTE_PLMN_SELECT 	CocoLinx::PLMN_SKT
-#define TEST_INTERVAL_SECONDS 1000 * 60 * 5	 // 3minutes
+#define TEST_INTERVAL_MS 1000 * 60 * 5	 // 5 minutes
 
 CocoLinx coco;
 
@@ -28,70 +35,82 @@ void setup() {
 }
 
 void loop() {
+  static uint32_t millisPrev = -(1000 * 60 * 5);
+	static uint32_t testCount = 0;
+
   int32_t ret;
-  const uint8_t ipv4[4] = {43, 200, 166, 133};
-	const uint16_t port = 7777;
 
-  // lte connection
-  ret = coco.lteConnect(180000, TEST_LTE_PLMN_SELECT);
-
-  if(ret != 0) 
+  if((millis() - millisPrev) >= TEST_INTERVAL_MS)
   {
-    Serial.print("LTE Connection error: ");
-    Serial.println(ret);
-    delay(500);
-  }
-  else 
-  {
-    Serial.println("udp echo server: 43, 200, 166, 133:7777 by cocolinx");
-	  Serial.print("udp open...");
+		Serial.print("***** UDP_Example [");	
+		Serial.print(testCount);
+		Serial.println("] *****");
 
-    ret = coco.udpOpen(ipv4, port);
-	  if(ret != 0) 
+    testCount++;
+    
+    const uint8_t ipv4[4] = {43, 200, 166, 133};
+    const uint16_t port = 7777;
+
+    // lte connection
+    ret = coco.lteConnect(180000, TEST_LTE_PLMN_SELECT);
+
+    if(ret != 0) 
     {
-      Serial.print("UDP open error: ");
+      Serial.print("LTE Connection error: ");
       Serial.println(ret);
-      coco.udpClose();
-    } 
+    }
     else 
     {
-      Serial.println("okay");
+      Serial.println("udp echo server: 43, 200, 166, 133:7777 by cocolinx");
+      Serial.print("udp open...");
 
-      // send...
-      char udpTx[] = "hello udp world~~~";
-      Serial.print("udp send...");
-      ret = coco.udpSend(udpTx, strlen(udpTx));
+      ret = coco.udpOpen(ipv4, port);
       if(ret != 0) 
       {
-        Serial.print("UDP send error: ");
+        Serial.print("UDP open error: ");
         Serial.println(ret);
-      } else 
+        coco.udpClose();
+      } 
+      else 
       {
         Serial.println("okay");
-        Serial.print("sent> ");
-        Serial.println(udpTx);
-      }
 
-      // recv...for 15secs
-      Serial.println("udp recv data(max 15secs)...start");
-      char udpRx[64];
-      int rxcnt = 30; // 500ms * 30 = 15secs
-      while(rxcnt--) 
-      {
-        int rxsize = coco.udpRecv(udpRx, sizeof(udpRx) - 1);
-        if(rxsize > 0) 
+        // send...
+        char udpTx[] = "hello udp world~~~";
+        Serial.print("udp send...");
+        ret = coco.udpSend(udpTx, strlen(udpTx));
+        if(ret != 0) 
         {
-          Serial.print("recv> ");
-          udpRx[rxsize] = '\0';
-          Serial.println(udpRx);
-          break;
-        } 
-        else 
+          Serial.print("UDP send error: ");
+          Serial.println(ret);
+        } else 
         {
-          if(rxcnt > 0) delay(500); // delay
+          Serial.println("okay");
+          Serial.print("sent> ");
+          Serial.println(udpTx);
+        }
+
+        // recv...for 15secs
+        Serial.println("udp recv data(max 15secs)...start");
+        char udpRx[64];
+        int rxcnt = 30; // 500ms * 30 = 15secs
+        while(rxcnt--) 
+        {
+          int rxsize = coco.udpRecv(udpRx, sizeof(udpRx) - 1);
+          if(rxsize > 0) 
+          {
+            Serial.print("recv> ");
+            udpRx[rxsize] = '\0';
+            Serial.println(udpRx);
+            break;
+          } 
+          else 
+          {
+            if(rxcnt > 0) delay(500); // delay
+          }
         }
       }
-      delay(TEST_INTERVAL_SECONDS);
     }
+    millisPrev = millis();
   }
 }

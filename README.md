@@ -22,5 +22,9 @@ An Arduino library for controlling LTE-M and RS485 Shield via UART.
 ## Examples
 
  - Tester: An all-in-one integration example that exercises most library features, including UDP, TCP, MQTT, and RS-485, for quick sanity and setup verification.
+ - Button_Example: Read Shield's button click counts every 5 seconds and print.
+ - GNSS_Example: Read GNSS data
+ - LED_Example: Turn on LED 5 seconds and turn off LED 5 seconds.
  - UDP_Example: Connect to LTE, open a UDP socket, and sends/receives data with an echo server.
+
 
